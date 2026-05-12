@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sendcopy.ai - Clay Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 sendcopy.ai</h1>
+            <p class="subtitle">Clay HTTP API Integration Demo</p>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-info">
+                    <h3>Total Leads</h3>
+                    <p class="stat-value" id="total-leads">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏰</div>
+                <div class="stat-info">
+                    <h3>Last Received</h3>
+                    <p class="stat-value" id="last-received">-</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📁</div>
+                <div class="stat-info">
+                    <h3>Lists</h3>
+                    <p class="stat-value" id="total-lists">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions-bar">
+            <button id="refresh-btn" class="btn btn-primary">
+                <span class="btn-icon">🔄</span> Refresh
+            </button>
+            <button id="download-btn" class="btn btn-success">
+                <span class="btn-icon">📥</span> Download CSV
+            </button>
+            <button id="test-btn" class="btn btn-warning">
+                <span class="btn-icon">🧪</span> Send Test Lead
+            </button>
+            <button id="clear-btn" class="btn btn-danger">
+                <span class="btn-icon">🗑️</span> Clear All
+            </button>
+        </div>
+
+        <!-- API Endpoint Info -->
+        <div class="endpoint-card">
+            <div class="endpoint-header">
+                <h3>🔗 Your Clay Endpoint</h3>
+                <span class="badge badge-live">LIVE</span>
+            </div>
+            <div class="endpoint-body">
+                <code id="endpoint-url">http://localhost:8080/api/leads</code>
+                <button class="btn-copy" onclick="copyEndpoint()">
+                    <span>📋</span> Copy
+                </button>
+            </div>
+            <p class="endpoint-note">
+                💡 Use <strong>ngrok</strong> to expose this to internet for Clay:
+                <code>npx ngrok http 8080</code>
+            </p>
+        </div>
+
+        <!-- Leads Table -->
+        <div class="table-section">
+            <div class="table-header">
+                <h3>📋 Received Leads</h3>
+                <div class="auto-refresh">
+                    <label class="toggle">
+                        <input type="checkbox" id="auto-refresh" checked>
+                        <span class="toggle-slider"></span>
+                        Auto-refresh (3s)
+                    </label>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="leads-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Company</th>
+                            <th>Job Title</th>
+                            <th>Location</th>
+                            <th>LinkedIn</th>
+                            <th>List</th>
+                            <th>Received</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leads-body">
+                        <!-- Dynamic rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="empty-state" class="empty-state">
+                <div class="empty-icon">📭</div>
+                <h3>No leads received yet</h3>
+                <p>Configure Clay HTTP API to send data to the endpoint above.</p>
+                <p>Or click <strong>"Send Test Lead"</strong> to simulate.</p>
+            </div>
+        </div>
+
+        <!-- Test Lead Modal -->
+        <div id="test-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>🧪 Send Test Lead</h3>
+                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" id="test-firstname" value="John">
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" id="test-lastname" value="Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Company</label>
+                        <input type="text" id="test-company" value="Acme Inc">
+                    </div>
+                    <div class="form-group">
+                        <label>Job Title</label>
+                        <input type="text" id="test-jobtitle" value="CEO">
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="test-location" value="New York, USA">
+                    </div>
+                    <div class="form-group">
+                        <label>LinkedIn URL</label>
+                        <input type="text" id="test-linkedin" value="https://linkedin.com/in/johndoe">
+                    </div>
+                    <div class="form-group">
+                        <label>List Name</label>
+                        <input type="text" id="test-listname" value="demo-list">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button class="btn btn-primary" onclick="sendTestLead()">Send Lead</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
